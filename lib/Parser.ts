@@ -87,11 +87,16 @@ export default class Parser {
     }
 
     //test :arg1 [a,b,c] :arg2?
-    parse(input: string): {id: string, data: any} {
+    parse(input: string): {id: string, data?: any, error?: any} {
         const endOfId = input.indexOf(" ")
         const id = input.substring(0, endOfId);
         const args = input.substring(endOfId+1);
         const pattern = this.patterns[id];
+
+        if(!pattern)return {
+            id,
+            error: `Pattern for '${id}' not found`
+        };
 
         let data = {};
         let currentPosition = 0;
@@ -102,7 +107,11 @@ export default class Parser {
 
             if(str.length === 0){
                 if(!argPattern.optional)
-                    console.log(`Missing required argument ${argPattern.name}`);
+                    return {
+                        id,
+                        data,
+                        error: `Missing Required Argument: ${argPattern.name}`
+                    }
                 data[argPattern.name] = null;
                 continue;
             }
@@ -120,8 +129,13 @@ export default class Parser {
                 let selectedOption = str.substring(0, index).toLowerCase();
                 data[argPattern.name] = argPattern.options.includes(selectedOption) ? selectedOption : null;
 
-                if(data[argPattern.name] === null && !argPattern.optional)
-                    console.log(`Invalid option for required argument ${argPattern.name}`);
+                if(data[argPattern.name] === null && !argPattern.optional){
+                    return {
+                        id,
+                        data,
+                        error: `Argument ${argPattern.name} must be one of: ${argPattern.options.join(", ")}`
+                    }
+                }
 
                 currentPosition += index+1;
             }
