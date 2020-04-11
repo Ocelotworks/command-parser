@@ -24,11 +24,13 @@ publish:
   stage: publish
   only:
     - master
+  artifacts:
+    paths:
+      - dist/
   script:
     - git config user.email peter@ocelotworks.com
     - git config user.name "GitLab"
     - npm config set allow-same-version true
-    - npm version patch
     - npm config set registry $NPM_REGISTRY
     - npm install -g npm-cli-login
     - npm-cli-login -u $NPM_USER -p $NPM_PASSWORD -e $NPM_EMAIL -r $NPM_REGISTRY
