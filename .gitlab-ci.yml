@@ -1,0 +1,34 @@
+image: node:latest
+
+stages:
+  - build
+  - publish
+
+build:
+  stage: build
+  only:
+    - master
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - dist/
+  script:
+    - npm install -g typescript
+    - npm install
+    - tsc
+
+publish:
+  stage: publish
+  only:
+    - master
+  script:
+    - git config user.email peter@ocelotworks.com
+    - git config user.name "GitLab"
+    - npm config set allow-same-version true
+    - npm version patch
+    - npm config set registry $NPM_REGISTRY
+    - npm install -g npm-cli-login
+    - npm-cli-login -u $NPM_USER -p $NPM_PASSWORD -e $NPM_EMAIL -r $NPM_REGISTRY
+    - npm publish
