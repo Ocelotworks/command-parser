@@ -16,6 +16,7 @@ build:
       - dist/
   script:
     - npm install -g typescript
+    - npm config set registry $NPM_REGISTRY
     - npm install
     - tsc
 
