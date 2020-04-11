@@ -11,9 +11,6 @@ export default class Parser {
     patterns: {[key: string]: any[]} = {};
 
     constructor(){
-        this.patterns["test"] = this.buildPattern(":arg1 :arg2 :arg3 [options:xyz,abc,pet] :optional? :optional2?");
-
-        console.log(this.parse("test ans1 ans2 ans3 pet sbbb"));
     }
 
     buildPattern(pattern: string){
@@ -101,7 +98,7 @@ export default class Parser {
 
         for(let i = 0; i < pattern.length; i++){
             const argPattern = pattern[i];
-            const str = args.substring(currentPosition).trimLeft();
+            const str = args.substring(currentPosition).trim();
 
             if(str.length === 0){
                 if(!argPattern.optional)
