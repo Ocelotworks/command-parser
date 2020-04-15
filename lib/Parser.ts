@@ -8,12 +8,12 @@ enum STATE {
 
 export default class Parser {
 
-    patterns: {[key: string]: any[]} = {};
+    patterns: {[key: string]: {id: string, pattern: any[]}} = {};
 
     constructor(){
     }
 
-    buildPattern(pattern: string){
+    buildPattern(id: string, pattern: string){
         let state = STATE.ROOT;
 
         let output = [];
@@ -76,7 +76,7 @@ export default class Parser {
             console.log(`Pattern ended with open state ${state}`);
         }
 
-        return output;
+        return {id: id, pattern: output};
     }
 
     private static getName(stack: any, pattern: string, tokenStart: number, i: number): string{
@@ -88,7 +88,9 @@ export default class Parser {
 
     //test :arg1 [a,b,c] :arg2?
     parse(input: string): {id: string, data?: any, error?: any} {
-        const endOfId = input.indexOf(" ")
+        let endOfId = input.indexOf(" ")
+        if(endOfId === -1)
+            endOfId = input.length;
         const id = input.substring(0, endOfId);
         const args = input.substring(endOfId+1);
         const pattern = this.patterns[id];
@@ -101,8 +103,8 @@ export default class Parser {
         let data = {};
         let currentPosition = 0;
 
-        for(let i = 0; i < pattern.length; i++){
-            const argPattern = pattern[i];
+        for(let i = 0; i < pattern.pattern.length; i++){
+            const argPattern = pattern.pattern[i];
             const str = args.substring(currentPosition).trim();
 
             if(str.length === 0){
@@ -141,7 +143,7 @@ export default class Parser {
             }
         }
 
-        return {id, data};
+        return {id: pattern.id, data};
     }
 }
 
