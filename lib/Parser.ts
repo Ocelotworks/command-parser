@@ -66,6 +66,8 @@ export default class Parser {
                 stack.options.push(pattern.substring(tokenStart, i))
                 tokenStart = i + 1;
                 push();
+            }else if(character === "+" && state === STATE.SINGLE){
+                stack.infinite = true;
             }
         }
 
@@ -80,9 +82,15 @@ export default class Parser {
     }
 
     private static getName(stack: any, pattern: string, tokenStart: number, i: number): string{
+
         if(stack.optional) {
-            return pattern.substring(tokenStart, i - 1);
+            i--;
         }
+
+        if(stack.infinite) {
+            i--;
+        }
+
         return pattern.substring(tokenStart, i);
     }
 
@@ -122,7 +130,11 @@ export default class Parser {
                 let index = str.indexOf(" ");
                 if(index == -1)
                     index = str.length;
-                data[argPattern.name] = str.substring(0, index);
+                if(argPattern.infinite === true){
+                    data[argPattern.name] = str;
+                }else{
+                    data[argPattern.name] = str.substring(0, index);
+                }
                 currentPosition += index+1;
             }else if(argPattern.type === "options"){
                 let index = str.indexOf(" ");
