@@ -1,8 +1,24 @@
 image: node:latest
 
 stages:
+  - release
   - build
   - publish
+
+
+version:
+  stage: release
+  image: registry.gitlab.com/juhani/go-semrel-gitlab:v0.20.4
+  script:
+    - release next-version --allow-current > .next-version
+    - cat .next-version
+    - release tag
+  artifacts:
+    untracked: true
+  only:
+    - master
+  except:
+    - tags
 
 build:
   stage: build
