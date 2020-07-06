@@ -30,9 +30,11 @@ build:
   artifacts:
     paths:
       - dist/
+      - package.json
   script:
     - npm install -g typescript
     - npm config set registry $NPM_REGISTRY
+    - npm version $(cat ../.next-version) --allow-same-version
     - npm install
     - tsc
 
@@ -43,6 +45,7 @@ publish:
   artifacts:
     paths:
       - dist/
+      - package.json
   script:
     - git config user.email peter@ocelotworks.com
     - git config user.name "GitLab"
