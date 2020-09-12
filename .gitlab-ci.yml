@@ -32,6 +32,8 @@ build:
       - dist/
       - package.json
   script:
+    - git config user.email peter@ocelotworks.com
+    - git config user.name "GitLab"
     - npm install -g typescript
     - npm config set registry $NPM_REGISTRY
     - npm version $(cat ../.next-version) --allow-same-version
