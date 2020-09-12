@@ -36,7 +36,7 @@ build:
     - git config user.name "GitLab"
     - npm install -g typescript
     - npm config set registry $NPM_REGISTRY
-    - npm version $(cat ../.next-version) --allow-same-version
+    - npm version $(cat .next-version) --allow-same-version
     - npm install
     - tsc
 
