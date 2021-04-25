@@ -1,3 +1,5 @@
+import Pattern, {PatternData} from "./Pattern";
+
 enum STATE {
     ROOT,
     SINGLE,
@@ -13,10 +15,10 @@ export default class Parser {
     constructor(){
     }
 
-    buildPattern(id: string, pattern: string){
+    static BuildPattern(id: string, pattern: string): Pattern{
         let state = STATE.ROOT;
 
-        let output = [];
+        let output: PatternData[] = [];
 
         let tokenStart = 0;
         let stack: any = {};
@@ -81,7 +83,7 @@ export default class Parser {
         return {id: id, pattern: output};
     }
 
-    private static getName(stack: any, pattern: string, tokenStart: number, i: number): string{
+    private static getName(stack: PatternData, pattern: string, tokenStart: number, i: number): string{
 
         if(stack.optional || stack.infinite) {
             i--;
@@ -90,20 +92,7 @@ export default class Parser {
         return pattern.substring(tokenStart, i);
     }
 
-    //test :arg1 [a,b,c] :arg2?
-    parse(input: string): {id: string, data?: any, error?: any} {
-        let endOfId = input.indexOf(" ")
-        if(endOfId === -1)
-            endOfId = input.length;
-        const id = input.substring(0, endOfId);
-        const args = input.substring(endOfId+1);
-        const pattern = this.patterns[id];
-
-        if(!pattern)return {
-            id,
-            error: `Pattern for '${id}' not found`
-        };
-
+    static Parse(args: string, pattern: Pattern): {data?: any, error?: any}{
         let data = {};
         let currentPosition = 0;
 
@@ -114,7 +103,6 @@ export default class Parser {
             if(str.length === 0){
                 if(!argPattern.optional)
                     return {
-                        id,
                         data,
                         error: `Missing Required Argument: ${argPattern.name}`
                     }
@@ -141,7 +129,6 @@ export default class Parser {
 
                 if(data[argPattern.name] === null && !argPattern.optional){
                     return {
-                        id,
                         data,
                         error: `Argument ${argPattern.name} must be one of: ${argPattern.options.join(", ")}`
                     }
@@ -151,7 +138,27 @@ export default class Parser {
             }
         }
 
-        return {id: pattern.id, data};
+        return {data};
+    }
+
+    //test :arg1 [a,b,c] :arg2?
+    parse(input: string): {id: string, data?: any, error?: any} {
+        let endOfId = input.indexOf(" ")
+        if(endOfId === -1)
+            endOfId = input.length;
+        const id = input.substring(0, endOfId);
+        const args = input.substring(endOfId+1);
+        const pattern = this.patterns[id];
+
+        if(!pattern)return {
+            id,
+            error: `Pattern for '${id}' not found`
+        };
+
+        return {
+            id,
+            ...Parser.Parse(args, pattern)
+        }
     }
 }
 
