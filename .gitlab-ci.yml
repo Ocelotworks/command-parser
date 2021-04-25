@@ -1,24 +1,9 @@
 image: node:latest
 
 stages:
-  - release
+#  - release
   - build
   - publish
-
-
-version:
-  stage: release
-  image: registry.gitlab.com/juhani/go-semrel-gitlab:v0.21.1
-  script:
-    - release next-version > .next-version
-    - cat .next-version
-    - release tag
-  artifacts:
-    untracked: true
-  only:
-    - master
-  except:
-    - tags
 
 build:
   stage: build
@@ -36,7 +21,8 @@ build:
     - git config user.name "GitLab"
     - npm install -g typescript
     - npm config set registry $NPM_REGISTRY
-    - npm version $(cat .next-version) --allow-same-version
+    - npx semantic-release
+#    - npm version $(cat .next-version) --allow-same-version
     - npm install
     - tsc
 
