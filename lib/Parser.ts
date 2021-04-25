@@ -87,6 +87,7 @@ export default class Parser {
         if(stack.optional || stack.infinite) {
             i--;
         }
+
         return pattern.substring(tokenStart, i);
     }
 
