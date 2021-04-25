@@ -84,11 +84,9 @@ export default class Parser {
     }
 
     private static getName(stack: PatternData, pattern: string, tokenStart: number, i: number): string{
-
         if(stack.optional || stack.infinite) {
             i--;
         }
-
         return pattern.substring(tokenStart, i);
     }
 
