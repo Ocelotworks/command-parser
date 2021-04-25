@@ -8,7 +8,7 @@ stages:
 
 version:
   stage: release
-  image: registry.gitlab.com/juhani/go-semrel-gitlab:v0.20.4
+  image: registry.gitlab.com/juhani/go-semrel-gitlab:v0.21.1
   script:
     - release next-version > .next-version
     - cat .next-version
