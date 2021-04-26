@@ -10,9 +10,9 @@ version:
   stage: release
   image: registry.gitlab.com/juhani/go-semrel-gitlab:v0.21.1
   script:
-    - release next-version > .next-version
+    - release next-version --bump-patch > .next-version
     - cat .next-version
-    - release tag
+    - release tag --list-other-changes
   artifacts:
     untracked: true
   only:
