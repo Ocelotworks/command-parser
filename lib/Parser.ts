@@ -8,6 +8,7 @@ enum STATE {
     STRING,
 }
 
+
 export default class Parser {
 
     patterns: {[key: string]: {id: string, pattern: any[]}} = {};
