@@ -14,8 +14,8 @@ build:
     - git config user.email peter@ocelotworks.com
     - git config user.name "GitLab"
     - npm config set registry $NPM_REGISTRY
-    - npm install -g typescript semantic-release @semantic-release/gitlab npm-cli-login
-    - semantic-release
+    - npm install -g typescript npm-cli-login
+    - npx semantic-release
     - npm install
     - tsc
     - npm-cli-login -u $NPM_USER -p $NPM_PASSWORD -e $NPM_EMAIL -r $NPM_REGISTRY
