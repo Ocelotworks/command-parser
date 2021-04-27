@@ -85,14 +85,17 @@ export default class Parser {
     }
 
     private static getName(stack: PatternData, pattern: string, tokenStart: number, i: number): string{
-        if(stack.optional || stack.infinite) {
+        if(stack.optional) {
+            i--;
+        }
+        if(stack.infinite){
             i--;
         }
 
         return pattern.substring(tokenStart, i);
     }
 
-    static Parse(args: string, pattern: Pattern): {data?: any, error?: any}{
+    static Parse(args: string, pattern: Pattern): {data?: any, error?: {type: string, data: any}}{
         let data = {};
         let currentPosition = 0;
 
@@ -104,7 +107,7 @@ export default class Parser {
                 if(!argPattern.optional)
                     return {
                         data,
-                        error: `Missing Required Argument: ${argPattern.name}`
+                        error: {type: "missingArg", data: argPattern.name}
                     }
                 data[argPattern.name] = null;
                 continue;
@@ -130,7 +133,7 @@ export default class Parser {
                 if(data[argPattern.name] === null && !argPattern.optional){
                     return {
                         data,
-                        error: `Argument ${argPattern.name} must be one of: ${argPattern.options.join(", ")}`
+                        error: {type: "options", data: argPattern.options}
                     }
                 }
 
@@ -161,5 +164,3 @@ export default class Parser {
         }
     }
 }
-
-new Parser();
