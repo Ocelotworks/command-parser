@@ -10,7 +10,7 @@ version:
   stage: release
   image: registry.gitlab.com/juhani/go-semrel-gitlab:v0.21.1
   script:
-    - apk install git
+    - apt install git
     - git tag --list
     - release next-version --bump-patch > .next-version
     - cat .next-version
