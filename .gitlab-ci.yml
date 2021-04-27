@@ -12,7 +12,7 @@ version:
   script:
     - apt update
     - apt install -y git
-    - git fetch --tags
+    - git fetch --tags -f
     - git tag --list
     - release next-version --bump-patch > .next-version
     - cat .next-version
