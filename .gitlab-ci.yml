@@ -11,7 +11,7 @@ version:
   image: registry.gitlab.com/juhani/go-semrel-gitlab:v0.21.1
   script:
     - apt update
-    - apt install git
+    - apt install -y git
     - git tag --list
     - release next-version --bump-patch > .next-version
     - cat .next-version
