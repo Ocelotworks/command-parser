@@ -1,7 +1,24 @@
 image: node:latest
 
 stages:
+  - release
   - build
+  - publish
+
+
+version:
+  stage: release
+  image: registry.gitlab.com/juhani/go-semrel-gitlab:v0.21.1
+  script:
+    - release next-version --bump-patch > .next-version
+    - cat .next-version
+    - release tag --list-other-changes
+  artifacts:
+    untracked: true
+  only:
+    - master
+  except:
+    - tags
 
 build:
   stage: build
@@ -10,14 +27,32 @@ build:
   cache:
     paths:
       - node_modules/
+  artifacts:
+    paths:
+      - dist/
+      - package.json
   script:
     - git config user.email peter@ocelotworks.com
     - git config user.name "GitLab"
+    - npm install -g typescript
     - npm config set registry $NPM_REGISTRY
-    - npm install -g typescript npm-cli-login
-    - npx semantic-release
+    - npm version $(cat .next-version) --allow-same-version
     - npm install
     - tsc
+
+publish:
+  stage: publish
+  only:
+    - master
+  artifacts:
+    paths:
+      - dist/
+      - package.json
+  script:
+    - git config user.email peter@ocelotworks.com
+    - git config user.name "GitLab"
+    - npm config set allow-same-version true
+    - npm config set registry $NPM_REGISTRY
+    - npm install -g npm-cli-login
     - npm-cli-login -u $NPM_USER -p $NPM_PASSWORD -e $NPM_EMAIL -r $NPM_REGISTRY
     - npm publish
-
