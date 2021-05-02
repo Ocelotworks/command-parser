@@ -41,9 +41,6 @@ export default class Parser {
                     //End of single arg
                     stack.name = Parser.getName(stack, pattern, tokenStart, i);
                     push();
-                }else if(state !== STATE.ROOT){
-                    console.log(`Malformed pattern char ${i} is '${character}' with state ${state}`);
-                    return
                 }
             }else if(character === ":"){
                 if(state === STATE.OPTIONS_NAME){
@@ -69,7 +66,7 @@ export default class Parser {
                 stack.options.push(pattern.substring(tokenStart, i))
                 tokenStart = i + 1;
                 push();
-            }else if(character === "+" && state === STATE.SINGLE){
+            }else if(character === "+"){
                 stack.infinite = true;
             }
         }
