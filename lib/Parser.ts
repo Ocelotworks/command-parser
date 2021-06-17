@@ -85,8 +85,33 @@ export default class Parser {
         if(stack.optional) {
             i--;
         }
+
         if(stack.infinite){
             i--;
+        }
+
+        // Special types
+        switch(pattern[tokenStart]){
+            case "@":
+                stack.type = "user";
+                tokenStart++;
+                break;
+            case "#":
+                stack.type = "channel";
+                tokenStart++;
+                break;
+            case "!":
+                stack.type = "boolean";
+                tokenStart++;
+                break;
+            case "&":
+                stack.type = "role";
+                tokenStart++;
+                break;
+            case "0":
+                stack.type = "integer";
+                tokenStart++;
+                break;
         }
 
         return pattern.substring(tokenStart, i);

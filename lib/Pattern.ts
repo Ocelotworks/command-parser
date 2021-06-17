@@ -5,7 +5,7 @@ export default interface Pattern {
 
 export interface PatternData {
     name: string,
-    type?: "options" | "single";
+    type?: "options" | "single" | "user" | "channel" | "boolean" | "role" | "integer";
     options?: string[],
     infinite?: boolean,
     optional?: boolean,

@@ -42,6 +42,21 @@ describe('Parser', ()=>{
             singlePatternTest("this is complete garbage")
             singlePatternTest("this is complete garbage with a :test at the end", {name: 'test', type: 'single'})
         })
+        it('should process user types', ()=>{
+            singlePatternTest(":@user", {name: 'user', type: 'user'})
+        })
+        it('should process channel types', ()=>{
+            singlePatternTest(":#channel", {name: 'channel', type: 'channel'})
+        })
+        it('should process boolean types', ()=>{
+            singlePatternTest(":!bool", {name: 'bool', type: 'boolean'})
+        })
+        it('should process role types', ()=>{
+            singlePatternTest(":&role", {name: 'role', type: 'role'})
+        })
+        it('should process integer types', ()=>{
+            singlePatternTest(":0number", {name: 'number', type: 'integer'})
+        })
     })
 
     describe('#Parse', ()=>{
