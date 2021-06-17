@@ -8,6 +8,26 @@ enum STATE {
     STRING,
 }
 
+const userRegex = /<@!?(\d{17,19})>/g;
+const channelRegex = /<#(\d{17,19})>/g;
+const rolesRegex = /<@&(\d{17,19})>/g;
+
+
+const bools = {
+    "1": true,
+    "0": false,
+    "yes": true,
+    "no": false,
+    "true": true,
+    "false": false,
+    "enable": true,
+    "disable": false,
+    "allow": true,
+    "disallow": false,
+    "deny": false,
+    "on": true,
+    "off": false,
+}
 
 export default class Parser {
 
@@ -129,37 +149,89 @@ export default class Parser {
                 if(!argPattern.optional)
                     return {
                         data,
-                        error: {type: "missingArg", data: argPattern.name}
+                        error: {type: "missing_arg", data: argPattern}
                     }
                 data[argPattern.name] = null;
                 continue;
             }
 
+            // Get the index of the end of the parsed pattern
+            let index = str.indexOf(" ");
+            if(index == -1)
+                index = str.length;
+            const value = str.substring(0, index);
+
             if(argPattern.type === "single"){
-                let index = str.indexOf(" ");
-                if(index == -1)
-                    index = str.length;
-                if(argPattern.infinite === true){
+                if(argPattern.infinite){
                     data[argPattern.name] = str;
                 }else{
-                    data[argPattern.name] = str.substring(0, index);
+                    data[argPattern.name] = value;
                 }
                 currentPosition += index+1;
             }else if(argPattern.type === "options"){
-                let index = str.indexOf(" ");
-                if(index == -1)
-                    index = str.length;
-                let selectedOption = str.substring(0, index).toLowerCase();
+                let selectedOption = value.toLowerCase();
                 data[argPattern.name] = argPattern.options.includes(selectedOption) ? selectedOption : null;
 
                 if(data[argPattern.name] === null && !argPattern.optional){
                     return {
                         data,
-                        error: {type: "options", data: argPattern.options}
+                        error: {type: "options", data: argPattern}
                     }
                 }
 
                 currentPosition += index+1;
+            }else if(argPattern.type === "user"){
+                const userMention = userRegex.exec(value);
+                const userID = userMention?.[1];
+                if(!userID && !argPattern.optional){
+                    return {
+                        data,
+                        error: {type: "user", data: argPattern}
+                    }
+                }
+                data[argPattern.name] = userID;
+                currentPosition += index+1;
+            }else if(argPattern.type === "role"){
+                const roleMention = rolesRegex.exec(value);
+                const roleID = roleMention?.[1];
+                if(!roleID && !argPattern.optional){
+                    return {
+                        data,
+                        error: {type: "role", data: argPattern}
+                    }
+                }
+                data[argPattern.name] = roleID;
+                currentPosition += index+1;
+            }else if(argPattern.type === "channel"){
+                const channelMention = channelRegex.exec(value);
+                const channelID = channelMention?.[1];
+                if(!channelID && !argPattern.optional){
+                    return {
+                        data,
+                        error: {type: "channel", data: argPattern}
+                    }
+                }
+                data[argPattern.name] = channelID;
+                currentPosition += index+1;
+            }else if(argPattern.type === "boolean"){
+                const bool = bools[value.toLowerCase()];
+                if(bool !== undefined){
+                    data[argPattern.name] = bool;
+                }else if(!argPattern.optional){
+                    return {
+                        data,
+                        error: {type: "boolean", data: argPattern}
+                    }
+                }
+            }else if(argPattern.type === "integer"){
+                const integer = parseInt(value);
+                if(isNaN(integer) && !argPattern.options){
+                    return {
+                        data,
+                        error: {type: "integer", data: argPattern}
+                    }
+                }
+                data[argPattern.name] = integer;
             }
         }
 

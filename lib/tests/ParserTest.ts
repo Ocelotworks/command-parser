@@ -65,7 +65,11 @@ describe('Parser', ()=>{
             parseTest(":test", "testInput garbage garbage garbage", {data: {test: "testInput"}})
         })
         it('should require a required argument', ()=>{
-            parseTest(":test", "", {data: {}, error: {type: "missingArg", data: "test"}})
+            parseTest(":test", "", {data: {}, error: {type: "missing_arg", data: {name: 'test', type: 'single'}}})
+        })
+        it('should parse a user mention', ()=>{
+            parseTest(":@user", "<@139871249567318017>", {data: {user: "139871249567318017"}})
+            parseTest(":@user", "<@!139871249567318017>", {data: {user: "139871249567318017"}})
         })
     })
 })
