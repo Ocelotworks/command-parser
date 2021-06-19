@@ -178,8 +178,8 @@ export default class Parser {
                         error: {type: "options", data: argPattern}
                     }
                 }
-
-                currentPosition += index+1;
+                if(data[argPattern.name] !== null)
+                    currentPosition += index+1;
             }else if(argPattern.type === "user"){
                 const userMention = userRegex.exec(value);
                 const userID = userMention?.[1];
@@ -190,7 +190,9 @@ export default class Parser {
                     }
                 }
                 data[argPattern.name] = userID;
-                currentPosition += index+1;
+                if(userID) {
+                    currentPosition += index + 1;
+                }
             }else if(argPattern.type === "role"){
                 const roleMention = rolesRegex.exec(value);
                 const roleID = roleMention?.[1];
@@ -201,7 +203,9 @@ export default class Parser {
                     }
                 }
                 data[argPattern.name] = roleID;
-                currentPosition += index+1;
+                if(roleID) {
+                    currentPosition += index + 1;
+                }
             }else if(argPattern.type === "channel"){
                 const channelMention = channelRegex.exec(value);
                 const channelID = channelMention?.[1];
@@ -212,11 +216,14 @@ export default class Parser {
                     }
                 }
                 data[argPattern.name] = channelID;
-                currentPosition += index+1;
+                if(channelID) {
+                    currentPosition += index + 1;
+                }
             }else if(argPattern.type === "boolean"){
                 const bool = bools[value.toLowerCase()];
                 if(bool !== undefined){
                     data[argPattern.name] = bool;
+                    currentPosition += index + 1;
                 }else if(!argPattern.optional){
                     return {
                         data,
@@ -225,13 +232,15 @@ export default class Parser {
                 }
             }else if(argPattern.type === "integer"){
                 const integer = parseInt(value);
-                if(isNaN(integer) && !argPattern.options){
+                if(!isNaN(integer)){
+                    data[argPattern.name] = integer;
+                    currentPosition += index+1;
+                }else if(!argPattern.options){
                     return {
                         data,
                         error: {type: "integer", data: argPattern}
                     }
                 }
-                data[argPattern.name] = integer;
             }
         }
 

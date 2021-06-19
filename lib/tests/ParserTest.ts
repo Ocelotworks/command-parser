@@ -74,5 +74,14 @@ describe('Parser', ()=>{
             parseTest(":@user", "<@139871249567318017>", {data: {user: "139871249567318017"}})
             parseTest(":@user", "<@!139871249567318017>", {data: {user: "139871249567318017"}})
         })
+        it('should parse options', ()=>{
+            parseTest("[option:a,b,c]", "a", {data: {option: "a"}})
+        })
+        it('should parse an optional option with a required argument after', ()=>{
+            parseTest("[option?:a,b,c] :other", "abcd", {data: {option: null, other: "abcd"}})
+        })
+        it('should parse an infinite option with a required argument after', ()=>{
+            parseTest("[option?+:a,b,c] :other", "a abcd", {data: {option: "a", other: "abcd"}})
+        })
     })
 })
