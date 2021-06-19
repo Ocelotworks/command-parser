@@ -32,6 +32,9 @@ describe('Parser', ()=>{
         it('should process options parameters correctly', ()=>{
             singlePatternTest("[test:a,b,c]", {name: 'test', type: 'options', options: ["a", "b", "c"]})
         })
+        it('should process optional options parameters correctly', ()=>{
+            singlePatternTest("[test?:a,b,c]", {name: 'test', type: 'options', options: ["a", "b", "c"], optional: true})
+        })
         it('should process infinite options parameters correctly', ()=>{
             singlePatternTest("[test+:a b,c d,e f]", {name: 'test', type: 'options', options: ["a b", "c d", "e f"], infinite: true})
         })

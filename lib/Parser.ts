@@ -8,9 +8,9 @@ enum STATE {
     STRING,
 }
 
-const userRegex = /<@!?(\d{17,19})>/g;
-const channelRegex = /<#(\d{17,19})>/g;
-const rolesRegex = /<@&(\d{17,19})>/g;
+const userRegex = /<@!?(\d{17,19})>/;
+const channelRegex = /<#(\d{17,19})>/;
+const rolesRegex = /<@&(\d{17,19})>/;
 
 
 const bools = {
