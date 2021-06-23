@@ -83,5 +83,10 @@ describe('Parser', ()=>{
         it('should parse an infinite option with a required argument after', ()=>{
             parseTest("[option?+:a,b,c] :other", "a abcd", {data: {option: "a", other: "abcd"}})
         })
+        it('should parse an optional integer with an optional argument after', ()=>{
+            parseTest(":0num? :str+", "1", {data: {num: 1, str: null}})
+            parseTest(":0num? :str+", "abc", {data: {num: null, str: "abc"}})
+            parseTest(":0num? :str+", "2 def", {data: {num: 2, str: "def"}})
+        })
     })
 })

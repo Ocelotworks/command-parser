@@ -235,7 +235,7 @@ export default class Parser {
                 if(!isNaN(integer)){
                     data[argPattern.name] = integer;
                     currentPosition += index+1;
-                }else if(!argPattern.options){
+                }else if(!argPattern.optional){
                     return {
                         data,
                         error: {type: "integer", data: argPattern}
